@@ -1,0 +1,64 @@
+{
+  "Ridge_Regression": {
+    "method": "Optuna",
+    "n_trials": 50,
+    "tuning_time": 0.35791897773742676,
+    "best_value": 1.1890588773785902,
+    "best_params": {
+      "alpha": 0.010065393396008903
+    }
+  },
+  "Lasso_Regression": {
+    "method": "Optuna",
+    "n_trials": 50,
+    "tuning_time": 43.11845541000366,
+    "best_value": 1.1902714843167355,
+    "best_params": {
+      "alpha": 0.010065393396008903
+    }
+  },
+  "Random_Forest": {
+    "method": "Optuna",
+    "n_trials": 50,
+    "tuning_time": 49.907318115234375,
+    "best_value": 0.9844230420930621,
+    "best_params": {
+      "n_estimators": 147,
+      "max_depth": 28,
+      "min_samples_split": 7,
+      "min_samples_leaf": 1,
+      "max_features": null
+    }
+  },
+  "Gradient_Boosting": {
+    "method": "Optuna",
+    "n_trials": 50,
+    "tuning_time": 406.18240213394165,
+    "best_value": 0.9668882217057804,
+    "best_params": {
+      "n_estimators": 170,
+      "learning_rate": 0.059587755802985656,
+      "max_depth": 10,
+      "min_samples_split": 2,
+      "min_samples_leaf": 5,
+      "subsample": 0.7658232394026742
+    }
+  },
+  "XGBoost": {
+    "method": "Optuna",
+    "n_trials": 50,
+    "tuning_time": 15.415646314620972,
+    "best_value": 0.9727393958455499,
+    "best_params": {
+      "n_estimators": 174,
+      "learning_rate": 0.05076870019594566,
+      "max_depth": 9,
+      "min_child_weight": 5,
+      "subsample": 0.7716440876909267,
+      "colsample_bytree": 0.8127540534263447,
+      "gamma": 0.37925699866087215,
+      "reg_alpha": 0.7498931474187599,
+      "reg_lambda": 0.7826803378411423
+    }
+  }
+}

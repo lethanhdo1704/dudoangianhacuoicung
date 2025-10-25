@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏠 Dự Đoán Giá Nhà Việt Nam</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .card-header h2 {
+            font-size: 1.4rem;
+            color: #667eea;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #667eea15, #764ba215);
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .info-box p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+        }
+
+        .empty-state .emoji {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+        }
+
+        .result-box {
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .price-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .price-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .price-value {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .price-range {
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+
+        .model-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .model-info h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .info-item strong {
+            color: #555;
+        }
+
+        .info-item span {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .alert-error {
+            background: #fee;
+            border-left: 4px solid #f44;
+            color: #c33;
+        }
+
+        .alert-success {
+            background: #efe;
+            border-left: 4px solid #4f4;
+            color: #3c3;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 968px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .placeholder-text {
+            color: #999;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>
+                <span>🏠</span>
+                <span>Dự Đoán Giá Nhà Việt Nam</span>
+            </h1>
+            <p>Sử dụng Machine Learning để ước tính giá bất động sản</p>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="main-grid">
+            <!-- Left Panel - Input Form -->
+            <div class="card">
+                <div class="card-header">
+                    <span>📋</span>
+                    <h2>Thông Tin Bất Động Sản</h2>
+                </div>
+
+                <div class="info-box">
+                    <p>💡 Chọn mô hình AI và nhập thông tin để dự đoán giá nhà chính xác</p>
+                </div>
+
+                <form id="predictionForm">
+                    <!-- Model Selection -->
+                    <div class="form-group">
+                        <label>
+                            <span>🤖</span>
+                            Chọn Mô Hình AI
+                        </label>
+                        <select id="modelSelect" name="model_id">
+                            <option value="Stacking_Regressor">Stacking Regressor (Best - R²=0.6424)</option>
+                        </select>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="form-group">
+                        <label>
+                            <span>📍</span>
+                            Tỉnh/Thành Phố
+                        </label>
+                        <select id="citySelect" name="City" required>
+                            <option value="">-- Chọn tỉnh/thành --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <span>🏘️</span>
+                            Quận/Huyện
+                        </label>
+                        <select id="districtSelect" name="District" required>
+                            <option value="">-- Chọn quận/huyện --</option>
+                        </select>
+                    </div>
+
+                    <!-- Area -->
+                    <div class="form-group">
+                        <label>
+                            <span>📐</span>
+                            Diện tích (m²)
+                        </label>
+                        <input type="number" name="Area" id="areaInput" placeholder="VD: 80" min="10" max="10000" required>
+                    </div>
+
+                    <!-- Rooms -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                <span>🛏️</span>
+                                Phòng Ngủ
+                            </label>
+                            <input type="number" name="Bedrooms" placeholder="VD: 3" min="0" max="20" required>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <span>🚿</span>
+                                Phòng Vệ Sinh
+                            </label>
+                            <input type="number" name="Bathrooms" placeholder="VD: 2" min="0" max="10" required>
+                        </div>
+                    </div>
+
+                    <!-- Floors -->
+                    <div class="form-group">
+                        <label>
+                            <span>🏢</span>
+                            Số Tầng
+                        </label>
+                        <input type="number" name="Floors" placeholder="VD: 4" min="1" max="20" required>
+                    </div>
+
+                    <!-- Required Fields -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                <span>📏</span>
+                                Mặt tiền (m) </span>
+                            </label>
+                            <input type="number" name="Frontage" placeholder="VD: 5" step="0.1" min="0.1" max="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <span>🛣️</span>
+                                Đường vào (m) </span>
+                            </label>
+                            <input type="number" name="Access Road" placeholder="VD: 4" step="0.1" min="0.1" max="100" required>
+                        </div>
+                    </div>
+
+                    <!-- Legal & Furniture -->
+                    <div class="form-group">
+                        <label>
+                            <span>📄</span>
+                            Tình Trạng Pháp Lý (Tùy chọn)
+                        </label>
+                        <select name="Legal status" id="legalStatusSelect">
+                            <option value="">-- Không xác định --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <span>🪑</span>
+                            Tình Trạng Nội Thất (Tùy chọn)
+                        </label>
+                        <select name="Furniture state" id="furnitureStateSelect">
+                            <option value="">-- Không xác định --</option>
+                        </select>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn" id="submitBtn">
+                        <span>🔮</span>
+                        <span>Dự Đoán Giá</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right Panel - Results -->
+            <div class="card">
+                <div class="card-header">
+                    <span>📊</span>
+                    <h2>Kết Quả Dự Đoán</h2>
+                </div>
+
+                <div id="errorContainer"></div>
+
+                <div class="result-container" id="resultContainer">
+                    <div class="empty-state">
+                        <div class="emoji">😊</div>
+                        <p>Vui lòng điền thông tin và nhấn "Dự Đoán Giá"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let locations = {};
+        let choices = {};
+        let models = [];
+
+        // Load initial data
+        async function loadInitialData() {
+            try {
+                // Load locations
+                const locationsRes = await fetch('/api/locations');
+                locations = await locationsRes.json();
+                populateCities();
+
+                // Load choices
+                const choicesRes = await fetch('/api/choices');
+                choices = await choicesRes.json();
+                populateChoices();
+
+                // Load models
+                const modelsRes = await fetch('/api/models');
+                const modelsData = await modelsRes.json();
+                models = modelsData.models;
+                populateModels();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showError('Không thể tải dữ liệu. Vui lòng tải lại trang.');
+            }
+        }
+
+        // Populate cities
+        function populateCities() {
+            const citySelect = document.getElementById('citySelect');
+            citySelect.innerHTML = '<option value="">-- Chọn tỉnh/thành --</option>';
+            
+            for (const [city, districts] of Object.entries(locations)) {
+                const option = document.createElement('option');
+                option.value = city;
+                option.textContent = city;
+                citySelect.appendChild(option);
+            }
+        }
+
+        // Populate districts based on city
+        document.getElementById('citySelect').addEventListener('change', function() {
+            const city = this.value;
+            const districtSelect = document.getElementById('districtSelect');
+            districtSelect.innerHTML = '<option value="">-- Chọn quận/huyện --</option>';
+
+            if (city && locations[city]) {
+                locations[city].forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district;
+                    option.textContent = district;
+                    districtSelect.appendChild(option);
+                });
+            }
+        });
+
+        // Populate choices
+        function populateChoices() {
+            // Legal status
+            const legalSelect = document.getElementById('legalStatusSelect');
+            ['Have Certificate', 'No Certificate', 'Waiting for Certificate'].forEach(status => {
+                const option = document.createElement('option');
+                option.value = status;
+                option.textContent = status === 'Have Certificate' ? 'Có sổ' : 
+                                   status === 'No Certificate' ? 'Chưa có sổ' : 'Đang chờ sổ';
+                legalSelect.appendChild(option);
+            });
+
+            // Furniture
+            const furnitureSelect = document.getElementById('furnitureStateSelect');
+            ['Full', 'Basic', 'Empty'].forEach(state => {
+                const option = document.createElement('option');
+                option.value = state;
+                option.textContent = state === 'Full' ? 'Đầy đủ' : 
+                                   state === 'Basic' ? 'Cơ bản' : 'Trống';
+                furnitureSelect.appendChild(option);
+            });
+        }
+
+        // Populate models
+        function populateModels() {
+            const modelSelect = document.getElementById('modelSelect');
+            modelSelect.innerHTML = '';
+            
+            models.forEach(model => {
+                const option = document.createElement('option');
+                option.value = model.id;
+                const bestLabel = model.is_best ? ' ⭐' : '';
+                const tunedLabel = model.tuned ? ' (Tuned)' : '';
+                option.textContent = `${model.name} - R²=${model.test_r2.toFixed(4)}${tunedLabel}${bestLabel}`;
+                modelSelect.appendChild(option);
+            });
+        }
+
+        // Show error
+        function showError(message) {
+            const errorContainer = document.getElementById('errorContainer');
+            errorContainer.innerHTML = `
+                <div class="alert alert-error">
+                    <strong>❌ Lỗi:</strong> ${message}
+                </div>
+            `;
+            setTimeout(() => {
+                errorContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        // Show result
+        // Show result
+function showResult(data) {
+    const container = document.getElementById('resultContainer');
+    const pred = data.prediction;
+    const modelInfo = data.model_info;
+
+    container.innerHTML = `
+        <div class="result-box">
+            <div class="price-display">
+                <div class="price-label">Giá Dự Đoán</div>
+                <div class="price-value">${pred.formatted} tỷ</div>
+                <div class="price-range">
+                    Khoảng: ${pred.lower_formatted} - ${pred.upper_formatted} tỷ
+                </div>
+            </div>
+
+            <div class="model-info">
+                <h3>🤖 Thông Tin Mô Hình: ${modelInfo.name}</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>R² Score:</strong>
+                        <span>${modelInfo.r2_score.toFixed(4)}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>MAE:</strong>
+                        <span>${modelInfo.mae.toFixed(2)}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>RMSE:</strong>
+                        <span>${modelInfo.rmse.toFixed(2)}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>MAPE:</strong>
+                        <span>${modelInfo.mape.toFixed(2)}%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="model-info">
+                <h3>📝 Thông Tin Nhà</h3>
+                <div class="info-grid">
+                    ${Object.entries(data.input_summary).map(([key, value]) => `
+                        <div class="info-item">
+                            <strong>${key}:</strong>
+                            <span>${value}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+        // Handle form submission
+        document.getElementById('predictionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalContent = submitBtn.innerHTML;
+            
+            // Show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading"></span><span>Đang dự đoán...</span>';
+            
+            // Gather form data
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value || '';
+            });
+
+            try {
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showResult(result);
+                } else {
+                    showError(result.errors.join('<br>'));
+                }
+            } catch (error) {
+                console.error('Prediction error:', error);
+                showError('Có lỗi xảy ra khi dự đoán. Vui lòng thử lại.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalContent;
+            }
+        });
+
+        // Initialize
+        loadInitialData();
+    </script>
+</body>
+</html>

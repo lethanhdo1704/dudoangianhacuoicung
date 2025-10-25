@@ -1,0 +1,12 @@
+{
+    "legal_statuses": [
+        "N/A",
+        "Have certificate",
+        "Sale contract"
+    ],
+    "furniture_states": [
+        "N/A",
+        "Basic",
+        "Full"
+    ]
+}
