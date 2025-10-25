@@ -469,7 +469,22 @@ def prepare_input_dataframe(data):
     df = pd.DataFrame([input_data])
     return df
 
+# Ở đầu file, sau phần import
+LEGAL_STATUS_VI = {
+    'Have Certificate': 'Có sổ',
+    'No Certificate': 'Chưa có sổ',
+    'Waiting for Certificate': 'Đang chờ sổ',
+    '': 'Không xác định',
+    'N/A': 'Không xác định'
+}
 
+FURNITURE_STATE_VI = {
+    'Full': 'Đầy đủ',
+    'Basic': 'Cơ bản',
+    'Empty': 'Trống',
+    '': 'Không xác định',
+    'N/A': 'Không xác định'
+}
 # ============================================================================
 # ROUTES
 # ============================================================================
@@ -588,12 +603,12 @@ def predict():
                 'Phòng ngủ': data['Bedrooms'],
                 'Phòng tắm': data['Bathrooms'],
                 'Số tầng': data['Floors'],
-                'Mặt tiền': f"{data.get('Frontage', 0)} m" if data.get('Frontage') else 'Không có',
-                'Đường vào': f"{data.get('Access Road', 0)} m" if data.get('Access Road') else 'Không có',
+                'Mặt tiền': f"{data.get('Frontage', 0)} m",
+                'Đường vào': f"{data.get('Access Road', 0)} m",
                 'Tỉnh/Thành': data['City'],
                 'Quận/Huyện': data.get('District', 'N/A'),
-                'Pháp lý': data.get('Legal status', 'N/A'),
-                'Nội thất': data.get('Furniture state', 'N/A')
+                'Pháp lý': LEGAL_STATUS_VI.get(data.get('Legal status', ''), 'Không xác định'),
+                'Nội thất': FURNITURE_STATE_VI.get(data.get('Furniture state', ''), 'Không xác định')
             },
             'model_info': {
                 'id': model_id,
