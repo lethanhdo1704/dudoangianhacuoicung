@@ -119,8 +119,21 @@ def initialize_app():
         
         # Load preprocessor (necessary for all predictions)
         print("\n📦 Loading preprocessor...")
-        preprocessor = joblib.load(PREPROCESSOR_PATH)
-        print("✅ Preprocessor loaded")
+        
+        # WORKAROUND: Make the class available in both preprocessor module and __main__
+        import sys
+        sys.modules['__main__'].RealEstatePreprocessor = RealEstatePreprocessor
+        
+        try:
+            preprocessor = joblib.load(PREPROCESSOR_PATH)
+            print("✅ Preprocessor loaded")
+        except AttributeError as e:
+            print(f"⚠️ Import error, trying alternative method: {e}")
+            # Fallback: Load with custom unpickler
+            import pickle
+            with open(PREPROCESSOR_PATH, 'rb') as f:
+                preprocessor = pickle.load(f)
+            print("✅ Preprocessor loaded (fallback method)")
         
         # Load locations and choices (lightweight JSON)
         with open(LOCATIONS_PATH, 'r', encoding='utf-8') as f:
