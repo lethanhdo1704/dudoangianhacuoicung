@@ -530,7 +530,8 @@ def internal_error(e):
 
 if __name__ == '__main__':
     print("\n🌐 Starting Flask server (Memory Optimized)...")
-    print("📍 Access at: http://localhost:5000")
+    port = int(os.environ.get('PORT', 5000))  # Lấy PORT từ Render
+    print(f"📍 Access at: http://0.0.0.0:{port}")
     print("💾 Models will load on-demand to save memory")
     print("Press CTRL+C to stop\n")
-    app.run(debug=False, host='0.0.0.0', port=5000)
+    app.run(debug=False, host='0.0.0.0', port=port)
