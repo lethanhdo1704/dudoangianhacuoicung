@@ -1,12 +1,8 @@
-fastapi
-uvicorn
-scikit-learn
+Flask
+gunicorn
+joblib
 pandas
 numpy
-jinja2
-joblib
+scikit-learn
 xgboost
-gunicorn
-python-multipart
-scikit-learn==1.7.1
-flask
+psutil
